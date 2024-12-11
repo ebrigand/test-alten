@@ -181,7 +181,6 @@ class ProductControllerTests {
         LoginRequestDto loginRequestDto = LoginRequestDto.builder().email("admin@admin.com").password("admin").build();
         HttpEntity<LoginRequestDto> request2 = new HttpEntity<>(loginRequestDto);
         String token = restTemplate.postForEntity("http://localhost:" + port + "/token", request2, String.class).getBody();
-        ResponseEntity<ProductDto[]> productDtosResponseEntity = this.restTemplate.getForEntity("http://localhost:" + port + "/products", ProductDto[].class, request2);
 
         assert token != null;
         HttpHeaders headers = new HttpHeaders();
