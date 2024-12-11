@@ -1,5 +1,8 @@
-package com.alten.test.app.security;
+package com.alten.test.app;
 
+import com.alten.test.app.security.AuthEntryPointJwt;
+import com.alten.test.app.security.AuthTokenFilter;
+import com.alten.test.app.security.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
