@@ -169,4 +169,40 @@ class ProductControllerTests {
         assertThat(productDtosResponseEntity.getBody().length).isEqualTo(2);
     }
 
+    @Test
+    void getProduct() throws Exception {
+        //Save account, verify response
+        AccountDto accountDto = AccountDto.builder().firstname("firstname").username("username").password("admin").email("admin@admin.com").build();
+        HttpEntity<AccountDto> request1 = new HttpEntity<>(accountDto);
+        AccountDto accountDtoResponse = restTemplate.postForEntity("http://localhost:" + port + "/account", request1, AccountDto.class).getBody();
+        assert accountDtoResponse != null;
+
+        //Get token
+        LoginRequestDto loginRequestDto = LoginRequestDto.builder().email("admin@admin.com").password("admin").build();
+        HttpEntity<LoginRequestDto> request2 = new HttpEntity<>(loginRequestDto);
+        String token = restTemplate.postForEntity("http://localhost:" + port + "/token", request2, String.class).getBody();
+        ResponseEntity<ProductDto[]> productDtosResponseEntity = this.restTemplate.getForEntity("http://localhost:" + port + "/products", ProductDto[].class, request2);
+
+        assert token != null;
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "Bearer " + token);
+
+        //Save product id=2, verify response
+        ProductDto productDto2 = ProductDto.builder().image("image2").code("code2").name("name2")
+                .code("code2").category("category2").description("description2").price(1L).internalReference("internal2")
+                .inventoryStatusEnum(InventoryStatusEnum.LOWSTOCK).rating(1L).quantity(1L).shellId(1L).build();
+        HttpEntity<ProductDto> request4 = new HttpEntity<>(productDto2, headers);
+        ProductDto productDto2Response = this.restTemplate.postForEntity("http://localhost:" + port + "/products", request4, ProductDto.class).getBody();
+        assert productDto2Response != null;
+        assertThat(productDto2Response.getImage()).contains(productDto2.getImage());
+        assertThat(productDto2Response.getCategory()).contains(productDto2.getCategory());
+        assertThat(productDto2Response.getCode()).contains(productDto2.getCode());
+        //Test all the other properties
+
+        //Test GET products, verify length = 1, verify id = 2
+        HttpEntity<Void> request6 = new HttpEntity<>(null, headers);
+        ProductDto productDtosResponseEntityBody = this.restTemplate.exchange("http://localhost:" + port + "/products/1", HttpMethod.GET, request6, ProductDto.class).getBody();
+        assert productDtosResponseEntityBody != null;
+        assertThat(productDtosResponseEntityBody.getId()).isEqualTo(1L);
+    }
 }
