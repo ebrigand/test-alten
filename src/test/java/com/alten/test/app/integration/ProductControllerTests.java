@@ -184,4 +184,46 @@ class ProductControllerTests {
         assert productDtosResponseEntityBody != null;
         assertThat(productDtosResponseEntityBody.getId()).isEqualTo(1L);
     }
+
+    @Test
+    void patchProduct() throws Exception {
+        //Save account, verify response
+        AccountDto accountDto = AccountDto.builder().firstname("firstname").username("username").password("admin").email("admin@admin.com").build();
+        HttpEntity<AccountDto> request1 = new HttpEntity<>(accountDto);
+        AccountDto accountDtoResponse = restTemplate.postForEntity("http://localhost:" + port + "/account", request1, AccountDto.class).getBody();
+        assert accountDtoResponse != null;
+
+        //Get token
+        LoginRequestDto loginRequestDto = LoginRequestDto.builder().email("admin@admin.com").password("admin").build();
+        HttpEntity<LoginRequestDto> request2 = new HttpEntity<>(loginRequestDto);
+        String token = restTemplate.postForEntity("http://localhost:" + port + "/token", request2, String.class).getBody();
+        assert token != null;
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "Bearer " + token);
+
+        //Save product 1, verify response
+        ProductDto productDto1 = ProductDto.builder().image("image1").code("code1").name("name1")
+                .code("code1").category("category1").description("description1").price(1L).internalReference("internal1")
+                .inventoryStatusEnum(InventoryStatusEnum.LOWSTOCK).rating(1L).quantity(1L).shellId(1L).build();
+        HttpEntity<ProductDto> request3 = new HttpEntity<>(productDto1, headers);
+        ProductDto productDto1Response = this.restTemplate.postForEntity("http://localhost:" + port + "/products", request3, ProductDto.class).getBody();
+        assert productDto1Response != null;
+
+        //patch product 1, verify response
+        ProductDto productDto1Patch = ProductDto.builder().quantity(2L).code("newCode1").build();
+        HttpEntity<ProductDto> request4 = new HttpEntity<>(productDto1Patch, headers);
+        ProductDto productDto1PatchResponse = this.restTemplate.patchForObject("http://localhost:" + port + "/products/1", request4, ProductDto.class);
+        assert productDto1PatchResponse != null;
+        assertThat(productDto1PatchResponse.getImage()).isEqualTo(productDto1.getImage());
+        assertThat(productDto1PatchResponse.getCode()).isEqualTo(productDto1Patch.getCode());
+        assertThat(productDto1PatchResponse.getQuantity()).isEqualTo(productDto1Patch.getQuantity());
+
+        //Test GET product 1, verify patched and not patched fields
+        HttpEntity<Void> request5 = new HttpEntity<>(null, headers);
+        ProductDto productDto1ResponseBody = this.restTemplate.exchange("http://localhost:" + port + "/products/1", HttpMethod.GET, request5, ProductDto.class).getBody();
+        assert productDto1ResponseBody != null;
+        assertThat(productDto1PatchResponse.getImage()).isEqualTo(productDto1.getImage());
+        assertThat(productDto1ResponseBody.getCode()).isEqualTo(productDto1Patch.getCode());
+        assertThat(productDto1ResponseBody.getQuantity()).isEqualTo(productDto1Patch.getQuantity());
+    }
 }
