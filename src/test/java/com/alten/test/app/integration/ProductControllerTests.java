@@ -130,7 +130,7 @@ class ProductControllerTests {
                 .inventoryStatusEnum(InventoryStatusEnum.LOWSTOCK).rating(1L).quantity(1L).shellId(1L).build();
         postAndVerifyProduct(productDto2, headers);
 
-        //Test all the other properties= 2
+        //Test GET products, verify length = 2
         HttpEntity<Void> request5 = new HttpEntity<>(null, headers);
         ResponseEntity<ProductDto[]> productDtosResponseEntity = this.restTemplate.exchange("http://localhost:" + port + "/products", HttpMethod.GET, request5, ProductDto[].class);
         assert productDtosResponseEntity.getBody() != null;

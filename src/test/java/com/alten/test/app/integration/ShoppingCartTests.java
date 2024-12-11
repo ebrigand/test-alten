@@ -27,7 +27,7 @@ class ShoppingCartTests {
     private TestRestTemplate restTemplate;
 
     @Test
-    void addAdminAccountAndGetTokenAndAddTwoProductsAndAddOneShoppingCartAndGetIt() throws Exception {
+    void addOneShoppingCartAndGetIt() throws Exception {
         HttpHeaders headers = addAdminAccountAndGetTokenAndAddTwoProductsAndGetHeaders();
 
         //Test save shopping cart, verify response
@@ -46,7 +46,7 @@ class ShoppingCartTests {
     }
 
     @Test
-    void addAdminAccountAndGetTokenAndAddTwoProductsAndAddOneShoppingCartAndReplaceIt() throws Exception {
+    void addOneShoppingCartAndReplaceIt() throws Exception {
         HttpHeaders headers = addAdminAccountAndGetTokenAndAddTwoProductsAndGetHeaders();
 
         //Test save shopping cart, verify response
@@ -95,7 +95,7 @@ class ShoppingCartTests {
         ProductDto productDto2Response = this.restTemplate.postForEntity("http://localhost:" + port + "/products", request4, ProductDto.class).getBody();
         assert productDto2Response != null;
 
-        //Test GET products, verify length = 2
+        //Test GET products, verify response
         HttpEntity<Void> request5 = new HttpEntity<>(null, headers);
         ResponseEntity<ProductDto[]> productDtosResponseEntity = this.restTemplate.exchange("http://localhost:" + port + "/products", HttpMethod.GET, request5, ProductDto[].class);
         assert productDtosResponseEntity.getBody() != null;
