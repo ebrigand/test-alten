@@ -47,39 +47,13 @@ class ProductControllerTests {
         ProductDto productDto1 = ProductDto.builder().image("image1").code("code1").name("name1")
                 .code("code1").category("category1").description("description1").price(1L).internalReference("internal1")
                 .inventoryStatusEnum(InventoryStatusEnum.LOWSTOCK).rating(1L).quantity(1L).shellId(1L).build();
-        HttpEntity<ProductDto> request3 = new HttpEntity<>(productDto1, headers);
-        ProductDto getProductDto1ResponseBody = this.restTemplate.postForEntity("http://localhost:" + port + "/products", request3, ProductDto.class).getBody();
-        assert getProductDto1ResponseBody != null;
-        assertThat(getProductDto1ResponseBody.getCode()).isEqualTo(productDto1.getCode());
-        assertThat(getProductDto1ResponseBody.getQuantity()).isEqualTo(productDto1.getQuantity());
-        assertThat(getProductDto1ResponseBody.getImage()).isEqualTo(productDto1.getImage());
-        assertThat(getProductDto1ResponseBody.getCategory()).isEqualTo(productDto1.getCategory());
-        assertThat(getProductDto1ResponseBody.getName()).isEqualTo(productDto1.getName());
-        assertThat(getProductDto1ResponseBody.getDescription()).isEqualTo(productDto1.getDescription());
-        assertThat(getProductDto1ResponseBody.getInternalReference()).isEqualTo(productDto1.getInternalReference());
-        assertThat(getProductDto1ResponseBody.getInventoryStatusEnum()).isEqualTo(productDto1.getInventoryStatusEnum());
-        assertThat(getProductDto1ResponseBody.getPrice()).isEqualTo(productDto1.getPrice());
-        assertThat(getProductDto1ResponseBody.getRating()).isEqualTo(productDto1.getRating());
-        assertThat(getProductDto1ResponseBody.getShellId()).isEqualTo(productDto1.getShellId());
+        postAndVerifyProduct(productDto1, headers);
 
         //Save product 2, verify response
         ProductDto productDto2 = ProductDto.builder().image("image2").code("code2").name("name2")
                 .code("code2").category("category2").description("description2").price(1L).internalReference("internal2")
                 .inventoryStatusEnum(InventoryStatusEnum.LOWSTOCK).rating(1L).quantity(1L).shellId(1L).build();
-        HttpEntity<ProductDto> request4 = new HttpEntity<>(productDto2, headers);
-        ProductDto getProductDto2ResponseBody = this.restTemplate.postForEntity("http://localhost:" + port + "/products", request4, ProductDto.class).getBody();
-        assert getProductDto2ResponseBody != null;
-        assertThat(getProductDto2ResponseBody.getCode()).isEqualTo(productDto2.getCode());
-        assertThat(getProductDto2ResponseBody.getQuantity()).isEqualTo(productDto2.getQuantity());
-        assertThat(getProductDto2ResponseBody.getImage()).isEqualTo(productDto2.getImage());
-        assertThat(getProductDto2ResponseBody.getCategory()).isEqualTo(productDto2.getCategory());
-        assertThat(getProductDto2ResponseBody.getName()).isEqualTo(productDto2.getName());
-        assertThat(getProductDto2ResponseBody.getDescription()).isEqualTo(productDto2.getDescription());
-        assertThat(getProductDto2ResponseBody.getInternalReference()).isEqualTo(productDto2.getInternalReference());
-        assertThat(getProductDto2ResponseBody.getInventoryStatusEnum()).isEqualTo(productDto2.getInventoryStatusEnum());
-        assertThat(getProductDto2ResponseBody.getPrice()).isEqualTo(productDto2.getPrice());
-        assertThat(getProductDto2ResponseBody.getRating()).isEqualTo(productDto2.getRating());
-        assertThat(getProductDto2ResponseBody.getShellId()).isEqualTo(productDto2.getShellId());
+        postAndVerifyProduct(productDto2, headers);
     }
 
     @Test
@@ -148,17 +122,13 @@ class ProductControllerTests {
         ProductDto productDto1 = ProductDto.builder().image("image1").code("code1").name("name1")
                 .code("code1").category("category1").description("description1").price(1L).internalReference("internal1")
                 .inventoryStatusEnum(InventoryStatusEnum.LOWSTOCK).rating(1L).quantity(1L).shellId(1L).build();
-        HttpEntity<ProductDto> request3 = new HttpEntity<>(productDto1, headers);
-        ProductDto productDto1Response = this.restTemplate.postForEntity("http://localhost:" + port + "/products", request3, ProductDto.class).getBody();
-        assert productDto1Response != null;
+        postAndVerifyProduct(productDto1, headers);
 
         //Save product 2, verify response
         ProductDto productDto2 = ProductDto.builder().image("image2").code("code2").name("name2")
                 .code("code2").category("category2").description("description2").price(1L).internalReference("internal2")
                 .inventoryStatusEnum(InventoryStatusEnum.LOWSTOCK).rating(1L).quantity(1L).shellId(1L).build();
-        HttpEntity<ProductDto> request4 = new HttpEntity<>(productDto2, headers);
-        ProductDto productDto2Response = this.restTemplate.postForEntity("http://localhost:" + port + "/products", request4, ProductDto.class).getBody();
-        assert productDto2Response != null;
+        postAndVerifyProduct(productDto2, headers);
 
         //Test all the other properties= 2
         HttpEntity<Void> request5 = new HttpEntity<>(null, headers);
@@ -188,9 +158,7 @@ class ProductControllerTests {
         ProductDto productDto1 = ProductDto.builder().image("image1").code("code1").name("name1")
                 .code("code1").category("category1").description("description1").price(1L).internalReference("internal1")
                 .inventoryStatusEnum(InventoryStatusEnum.LOWSTOCK).rating(1L).quantity(1L).shellId(1L).build();
-        HttpEntity<ProductDto> request3 = new HttpEntity<>(productDto1, headers);
-        ProductDto productDto1Response = this.restTemplate.postForEntity("http://localhost:" + port + "/products", request3, ProductDto.class).getBody();
-        assert productDto1Response != null;
+        postAndVerifyProduct(productDto1, headers);
 
         //Test GET product, verify id = 1
         HttpEntity<Void> request4 = new HttpEntity<>(null, headers);
@@ -219,9 +187,7 @@ class ProductControllerTests {
         ProductDto productDto1 = ProductDto.builder().image("image1").code("code1").name("name1")
                 .code("code1").category("category1").description("description1").price(1L).internalReference("internal1")
                 .inventoryStatusEnum(InventoryStatusEnum.LOWSTOCK).rating(1L).quantity(1L).shellId(1L).build();
-        HttpEntity<ProductDto> request3 = new HttpEntity<>(productDto1, headers);
-        ProductDto productDto1Response = this.restTemplate.postForEntity("http://localhost:" + port + "/products", request3, ProductDto.class).getBody();
-        assert productDto1Response != null;
+        postAndVerifyProduct(productDto1, headers);
 
         //patch product 1, verify response
         ProductDto productDto1Patch = ProductDto.builder().quantity(2L).code("newCode1").build();
@@ -259,5 +225,22 @@ class ProductControllerTests {
         assertThat(getProductDto1ResponseBody.getPrice()).isEqualTo(productDto1.getPrice());
         assertThat(getProductDto1ResponseBody.getRating()).isEqualTo(productDto1.getRating());
         assertThat(getProductDto1ResponseBody.getShellId()).isEqualTo(productDto1.getShellId());
+    }
+
+    private void postAndVerifyProduct(ProductDto productDto, HttpHeaders headers) {
+        HttpEntity<ProductDto> request = new HttpEntity<>(productDto, headers);
+        ProductDto getProductDtoResponseBody = this.restTemplate.postForEntity("http://localhost:" + port + "/products", request, ProductDto.class).getBody();
+        assert getProductDtoResponseBody != null;
+        assertThat(getProductDtoResponseBody.getCode()).isEqualTo(productDto.getCode());
+        assertThat(getProductDtoResponseBody.getQuantity()).isEqualTo(productDto.getQuantity());
+        assertThat(getProductDtoResponseBody.getImage()).isEqualTo(productDto.getImage());
+        assertThat(getProductDtoResponseBody.getCategory()).isEqualTo(productDto.getCategory());
+        assertThat(getProductDtoResponseBody.getName()).isEqualTo(productDto.getName());
+        assertThat(getProductDtoResponseBody.getDescription()).isEqualTo(productDto.getDescription());
+        assertThat(getProductDtoResponseBody.getInternalReference()).isEqualTo(productDto.getInternalReference());
+        assertThat(getProductDtoResponseBody.getInventoryStatusEnum()).isEqualTo(productDto.getInventoryStatusEnum());
+        assertThat(getProductDtoResponseBody.getPrice()).isEqualTo(productDto.getPrice());
+        assertThat(getProductDtoResponseBody.getRating()).isEqualTo(productDto.getRating());
+        assertThat(getProductDtoResponseBody.getShellId()).isEqualTo(productDto.getShellId());
     }
 }
