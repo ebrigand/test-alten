@@ -15,6 +15,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.DirtiesContext;
 
+import java.util.Objects;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -28,10 +30,29 @@ class AccountControllerTests {
     private TestRestTemplate restTemplate;
 
     @Test
+    void addAdminAccountAndAddNoAdminAccount() throws Exception {
+        AccountDto adminAccountDto = AccountDto.builder().firstname("firstname").username("username").password("admin").email("admin@admin.com").build();
+        HttpEntity<AccountDto> request1 = new HttpEntity<>(adminAccountDto);
+        AccountDto accountDtoResponseBody1 = this.restTemplate.postForEntity("http://localhost:" + port + "/account", request1, AccountDto.class).getBody();
+        assert accountDtoResponseBody1 != null;
+        assertThat(accountDtoResponseBody1.getUsername()).isEqualTo(adminAccountDto.getUsername());
+        assertThat(accountDtoResponseBody1.getEmail()).isEqualTo(adminAccountDto.getEmail());
+        assertThat(accountDtoResponseBody1.getFirstname()).isEqualTo(adminAccountDto.getFirstname());
+
+        AccountDto  noAdminAccountDto = AccountDto.builder().firstname("firstname2").username("username2").password("truc").email("truc@truc.com").build();
+        HttpEntity<AccountDto> request2 = new HttpEntity<>(noAdminAccountDto);
+        AccountDto accountDtoResponseBody2 = this.restTemplate.postForEntity("http://localhost:" + port + "/account", request2, AccountDto.class).getBody();
+        assert accountDtoResponseBody2 != null;
+        assertThat(accountDtoResponseBody2.getUsername()).isEqualTo(noAdminAccountDto.getUsername());
+        assertThat(accountDtoResponseBody2.getEmail()).isEqualTo(noAdminAccountDto.getEmail());
+        assertThat(accountDtoResponseBody2.getFirstname()).isEqualTo(noAdminAccountDto.getFirstname());
+    }
+
+    @Test
     void addNoAdminAccountAndGetTokenAndAddOneProduct() throws Exception {
         AccountDto accountDto = AccountDto.builder().firstname("firstname").username("username").password("truc").email("truc@truc.com").build();
         HttpEntity<AccountDto> request1 = new HttpEntity<>(accountDto);
-        AccountDto accountDtoResponse = this.restTemplate.postForEntity("http://localhost:" + port + "/account", request1, AccountDto.class).getBody();
+        this.restTemplate.postForEntity("http://localhost:" + port + "/account", request1, AccountDto.class);
 
         //Get token
         LoginRequestDto loginRequestDto = LoginRequestDto.builder().email("truc@truc.com").password("truc").build();
@@ -55,7 +76,7 @@ class AccountControllerTests {
     void addAccountWithSameEmailTwice() throws Exception {
         AccountDto accountDto = AccountDto.builder().firstname("firstname").username("username").password("truc").email("truc@truc.com").build();
         HttpEntity<AccountDto> request1 = new HttpEntity<>(accountDto);
-        AccountDto accountDtoResponse = this.restTemplate.postForEntity("http://localhost:" + port + "/account", request1, AccountDto.class).getBody();
+        this.restTemplate.postForEntity("http://localhost:" + port + "/account", request1, AccountDto.class);
 
         accountDto = AccountDto.builder().firstname("firstname2").username("username2").password("truc").email("truc@truc.com").build();
         HttpEntity<AccountDto> request2 = new HttpEntity<>(accountDto);
@@ -69,7 +90,7 @@ class AccountControllerTests {
     void addNoAdminAccountAndCallGetTokenWithIncorrectPassword() throws Exception {
         AccountDto accountDto = AccountDto.builder().firstname("firstname").username("username").password("truc").email("truc@truc.com").build();
         HttpEntity<AccountDto> request1 = new HttpEntity<>(accountDto);
-        this.restTemplate.postForEntity("http://localhost:" + port + "/account", request1, AccountDto.class).getBody();
+        this.restTemplate.postForEntity("http://localhost:" + port + "/account", request1, AccountDto.class);
 
         //Get token
         LoginRequestDto loginRequestDto = LoginRequestDto.builder().email("truc@truc.com").password("admin").build();
