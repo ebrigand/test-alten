@@ -9,7 +9,7 @@ import java.util.List;
 
 @Data
 @Builder
-public class WantedListDto implements Serializable {
+public class WishListDto implements Serializable {
 
     @JsonProperty("productCounts")
     private List<ProductCountDto> productCountDtos;

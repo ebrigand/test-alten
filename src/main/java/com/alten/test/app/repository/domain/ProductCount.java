@@ -20,8 +20,8 @@ public class ProductCount {
     private Product product;
 
     @ManyToOne
-    @JoinColumn(name = "WANTED_LIST_ID", referencedColumnName = "WANTED_LIST_ID")
-    private WantedList wantedList;
+    @JoinColumn(name = "WISH_LIST_ID", referencedColumnName = "WISH_LIST_ID")
+    private WishList wishList;
 
     private Integer quantity = 0;
 
@@ -29,11 +29,11 @@ public class ProductCount {
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         ProductCount that = (ProductCount) o;
-        return Objects.equals(id, that.id) && Objects.equals(product, that.product) && Objects.equals(wantedList, that.wantedList) && Objects.equals(quantity, that.quantity);
+        return Objects.equals(id, that.id) && Objects.equals(product, that.product) && Objects.equals(wishList, that.wishList) && Objects.equals(quantity, that.quantity);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, product, wantedList, quantity);
+        return Objects.hash(id, product, wishList, quantity);
     }
 }

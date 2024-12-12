@@ -12,7 +12,7 @@ import org.mapstruct.Named;
 public interface ProductCountMapper {
 
     @Mapping(source = "productId", target = "product", qualifiedByName = "productIdToProduct")
-    @Mapping(target = "wantedList", ignore = true)
+    @Mapping(target = "wishList", ignore = true)
     @Mapping(target = "id", ignore = true)
     ProductCount mapToProductCount(ProductCountDto ProductCountDto);
 

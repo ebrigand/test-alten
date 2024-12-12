@@ -18,7 +18,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
-class WantedListTests {
+class WishListTests {
 
     @LocalServerPort
     private int port;
@@ -27,59 +27,59 @@ class WantedListTests {
     private TestRestTemplate restTemplate;
 
     @Test
-    void addOneWantedListAndGetIt() throws Exception {
+    void addOneWishListAndGetIt() throws Exception {
         HttpHeaders headers = addAdminAccountAndGetTokenAndAddTwoProductsAndGetHeaders();
 
-        //Test save wanted list, verify response
-        WantedListDto wantedListDto = WantedListDto.builder().productCountDtos(
+        //Test save wish list, verify response
+        WishListDto wishListDto = WishListDto.builder().productCountDtos(
                 Lists.list(
                         ProductCountDto.builder().productId(1L).build(),
                         ProductCountDto.builder().productId(2L).build())).build();
-        HttpEntity<WantedListDto> request6 = new HttpEntity<>(wantedListDto, headers);
-        WantedListDto wantedListDtoResponse = this.restTemplate.postForEntity("http://localhost:" + port + "/wanted-list", request6, WantedListDto.class).getBody();
-        assert wantedListDtoResponse != null;
-        assertThat(wantedListDtoResponse.getProductCountDtos().stream().map(
+        HttpEntity<WishListDto> request6 = new HttpEntity<>(wishListDto, headers);
+        WishListDto wishListDtoResponse = this.restTemplate.postForEntity("http://localhost:" + port + "/wish-list", request6, WishListDto.class).getBody();
+        assert wishListDtoResponse != null;
+        assertThat(wishListDtoResponse.getProductCountDtos().stream().map(
                 ProductCountDto::getProductId).toList())
-                .containsExactlyInAnyOrderElementsOf(wantedListDto.getProductCountDtos().stream().map(
+                .containsExactlyInAnyOrderElementsOf(wishListDto.getProductCountDtos().stream().map(
                         ProductCountDto::getProductId).toList());
 
-        //get shopping cart, verify response contains the previous saved wanted list
+        //get shopping cart, verify response contains the previous saved wish list
         HttpEntity<Void> request7 = new HttpEntity<>(null, headers);
-        WantedListDto wantedListDto2Response = this.restTemplate.exchange("http://localhost:" + port + "/wanted-list", HttpMethod.GET, request7, WantedListDto.class).getBody();
-        assert wantedListDto2Response != null;
-        assertThat(wantedListDto2Response.getProductCountDtos().stream().map(
+        WishListDto wishListDto2Response = this.restTemplate.exchange("http://localhost:" + port + "/wish-list", HttpMethod.GET, request7, WishListDto.class).getBody();
+        assert wishListDto2Response != null;
+        assertThat(wishListDto2Response.getProductCountDtos().stream().map(
                 ProductCountDto::getProductId).toList())
-                .containsExactlyInAnyOrderElementsOf(wantedListDto.getProductCountDtos().stream().map(
+                .containsExactlyInAnyOrderElementsOf(wishListDto.getProductCountDtos().stream().map(
                         ProductCountDto::getProductId).toList());
     }
 
     @Test
-    void addOneWantedListAndReplaceIt() throws Exception {
+    void addOneWishListAndReplaceIt() throws Exception {
         HttpHeaders headers = addAdminAccountAndGetTokenAndAddTwoProductsAndGetHeaders();
 
-        //Test save wanted list, verify response
-        WantedListDto wantedListDto = WantedListDto.builder().productCountDtos(
+        //Test save wish list, verify response
+        WishListDto wishListDto = WishListDto.builder().productCountDtos(
                 Lists.list(
                         ProductCountDto.builder().productId(1L).build(),
                         ProductCountDto.builder().productId(2L).build())).build();
-        HttpEntity<WantedListDto> request6 = new HttpEntity<>(wantedListDto, headers);
-        WantedListDto wantedListDtoResponse = this.restTemplate.postForEntity("http://localhost:" + port + "/wanted-list", request6, WantedListDto.class).getBody();
-        assert wantedListDtoResponse != null;
-        assertThat(wantedListDtoResponse.getProductCountDtos().stream().map(
+        HttpEntity<WishListDto> request6 = new HttpEntity<>(wishListDto, headers);
+        WishListDto wishListDtoResponse = this.restTemplate.postForEntity("http://localhost:" + port + "/wish-list", request6, WishListDto.class).getBody();
+        assert wishListDtoResponse != null;
+        assertThat(wishListDtoResponse.getProductCountDtos().stream().map(
                 ProductCountDto::getProductId).toList())
-                .containsExactlyInAnyOrderElementsOf(wantedListDto.getProductCountDtos().stream().map(
+                .containsExactlyInAnyOrderElementsOf(wishListDto.getProductCountDtos().stream().map(
                         ProductCountDto::getProductId).toList());
 
-        //Test save new wanted list, verify response
-        WantedListDto wantedListDto2 = WantedListDto.builder().productCountDtos(
+        //Test save new wish list, verify response
+        WishListDto wishListDto2 = WishListDto.builder().productCountDtos(
                 Lists.list(
                         ProductCountDto.builder().productId(1L).build())).build();
-        HttpEntity<WantedListDto> request7 = new HttpEntity<>(wantedListDto2, headers);
-        WantedListDto wantedListDto2Response = this.restTemplate.postForEntity("http://localhost:" + port + "/wanted-list", request7, WantedListDto.class).getBody();
-        assert wantedListDto2Response != null;
-        assertThat(wantedListDto2Response.getProductCountDtos().stream().map(
+        HttpEntity<WishListDto> request7 = new HttpEntity<>(wishListDto2, headers);
+        WishListDto wishListDto2Response = this.restTemplate.postForEntity("http://localhost:" + port + "/wish-list", request7, WishListDto.class).getBody();
+        assert wishListDto2Response != null;
+        assertThat(wishListDto2Response.getProductCountDtos().stream().map(
                 ProductCountDto::getProductId).toList())
-                .containsExactlyInAnyOrderElementsOf(wantedListDto2.getProductCountDtos().stream().map(
+                .containsExactlyInAnyOrderElementsOf(wishListDto2.getProductCountDtos().stream().map(
                         ProductCountDto::getProductId).toList());
     }
 

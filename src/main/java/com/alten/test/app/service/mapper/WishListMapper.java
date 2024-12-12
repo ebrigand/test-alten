@@ -1,9 +1,9 @@
 package com.alten.test.app.service.mapper;
 
 import com.alten.test.app.model.ProductCountDto;
-import com.alten.test.app.model.WantedListDto;
+import com.alten.test.app.model.WishListDto;
 import com.alten.test.app.repository.domain.ProductCount;
-import com.alten.test.app.repository.domain.WantedList;
+import com.alten.test.app.repository.domain.WishList;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
@@ -14,15 +14,15 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Mapper(componentModel = "spring")
-public interface WantedListMapper {
+public interface WishListMapper {
 
     @Mapping(source = "productCounts", target = "productCountDtos", qualifiedByName = "productCountsToProductCountDtos")
-    WantedListDto mapToWantedListDto(WantedList wantedList);
+    WishListDto mapToWishListDto(WishList wishList);
 
     @Mapping(source = "productCountDtos", target = "productCounts", qualifiedByName = "productCountDtosToProductCounts")
     @Mapping(target = "account", ignore = true)
     @Mapping(target = "id", ignore = true)
-    WantedList mapToWantedList(WantedListDto wantedListDto);
+    WishList mapToWishList(WishListDto wishListDto);
 
     @Named("productCountsToProductCountDtos")
     static List<ProductCountDto> productCountsToProductCountDtos(Set<ProductCount> productCounts) {
