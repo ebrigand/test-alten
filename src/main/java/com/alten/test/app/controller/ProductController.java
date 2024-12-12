@@ -57,7 +57,7 @@ public class ProductController {
         productService.delete(id);
     }
 
-    //Ce n'est pas super, peut être moyen de gérer celà dans un filtre ou dans la methode WebSecurityConfig.filterChain(HttpSecurity http)
+    //Peut être moyen de gérer celà dans un filtre ou dans la methode WebSecurityConfig.filterChain(HttpSecurity http)
     //Dans la vrai vie je poserais la question aux collègues ou sur stackoverflow
     private void checkAuthorized(){
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
