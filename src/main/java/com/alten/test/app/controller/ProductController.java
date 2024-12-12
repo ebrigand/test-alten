@@ -5,6 +5,7 @@ import com.alten.test.app.model.AccountDto;
 import com.alten.test.app.model.ProductDto;
 import com.alten.test.app.service.AccountService;
 import com.alten.test.app.service.ProductService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
@@ -14,6 +15,9 @@ import java.util.List;
 @RestController
 @RequestMapping("/products")
 public class ProductController {
+
+    @Value("${account.admin.email}")
+    private String adminAccountEmail;
 
     private final ProductService productService;
 
@@ -58,7 +62,7 @@ public class ProductController {
     private void checkAuthorized(){
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         AccountDto accountDto = accountService.getByUsername(userDetails.getUsername());
-        if(!accountDto.getEmail().equals("admin@admin.com")) {
+        if(!accountDto.getEmail().equals(adminAccountEmail)) {
             throw new UnauthorizedException(userDetails.getUsername());
         }
     }
