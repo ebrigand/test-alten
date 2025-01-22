@@ -7,11 +7,7 @@ import lombok.Data;
 import java.io.Serializable;
 import java.util.List;
 
-@Data
-@Builder
-public class ShoppingCartDto implements Serializable {
-
-    @JsonProperty("productIds")
-    private List<Long> productIds;
-
+public record ShoppingCartDto(
+        @JsonProperty("productIds") List<Long> productIds
+) implements Serializable {
 }

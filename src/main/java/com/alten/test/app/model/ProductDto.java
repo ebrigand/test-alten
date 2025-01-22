@@ -7,22 +7,20 @@ import lombok.Data;
 
 import java.io.Serializable;
 
-@Data
-@Builder
-public class ProductDto implements Serializable {
-        private Long id;
-        private String code;
-        private String name;
-        private String description;
-        private String image;
-        private String category;
-        private Long price;
-        private Long quantity;
-        private String internalReference;
-        private Long shellId;
-        @JsonProperty("inventoryStatus")
-        private InventoryStatusEnum inventoryStatusEnum;
-        private Long rating;
-        private Long createdAt;
-        private Long updatedAt;
+public record ProductDto(
+        Long id,
+        String code,
+        String name,
+        String description,
+        String image,
+        String category,
+        Long price,
+        Long quantity,
+        String internalReference,
+        Long shellId,
+        @JsonProperty("inventoryStatus") InventoryStatusEnum inventoryStatusEnum,
+        Long rating,
+        Long createdAt,
+        Long updatedAt
+) implements Serializable {
 }

@@ -30,68 +30,71 @@ class WishListTests {
     void addOneWishListAndGetIt() throws Exception {
         HttpHeaders headers = addAdminAccountAndGetTokenAndAddTwoProductsAndGetHeaders();
 
-        //Test save wish list, verify response
-        WishListDto wishListDto = WishListDto.builder().productCountDtos(
+        // Test save wish list, verify response
+        WishListDto wishListDto = new WishListDto(
                 Lists.list(
-                        ProductCountDto.builder().productId(1L).build(),
-                        ProductCountDto.builder().productId(2L).build())).build();
+                        new ProductCountDto(1L, null),
+                        new ProductCountDto(2L, null)));
         HttpEntity<WishListDto> request6 = new HttpEntity<>(wishListDto, headers);
-        WishListDto wishListDtoResponse = this.restTemplate.postForEntity("http://localhost:" + port + "/wish-list", request6, WishListDto.class).getBody();
+        ResponseEntity<WishListDto> responseEntity = this.restTemplate.postForEntity("http://localhost:" + port + "/wish-list", request6, WishListDto.class);
+        WishListDto wishListDtoResponse = responseEntity.getBody();
+        assert responseEntity.getStatusCode().is2xxSuccessful();
         assert wishListDtoResponse != null;
-        assertThat(wishListDtoResponse.getProductCountDtos().stream().map(
-                ProductCountDto::getProductId).toList())
-                .containsExactlyInAnyOrderElementsOf(wishListDto.getProductCountDtos().stream().map(
-                        ProductCountDto::getProductId).toList());
+        assertThat(wishListDtoResponse.productCountDtos().stream().map(
+                ProductCountDto::productId).toList())
+                .containsExactlyInAnyOrderElementsOf(wishListDto.productCountDtos().stream().map(
+                        ProductCountDto::productId).toList());
 
-        //get shopping cart, verify response contains the previous saved wish list
-        HttpEntity<Void> request7 = new HttpEntity<>(null, headers);
-        WishListDto wishListDto2Response = this.restTemplate.exchange("http://localhost:" + port + "/wish-list", HttpMethod.GET, request7, WishListDto.class).getBody();
-        assert wishListDto2Response != null;
-        assertThat(wishListDto2Response.getProductCountDtos().stream().map(
-                ProductCountDto::getProductId).toList())
-                .containsExactlyInAnyOrderElementsOf(wishListDto.getProductCountDtos().stream().map(
-                        ProductCountDto::getProductId).toList());
+        // Get wish list, verify response contains the previously saved wish list
+        ResponseEntity<WishListDto> getResponseEntity = this.restTemplate.exchange("http://localhost:" + port + "/wish-list", HttpMethod.GET, new HttpEntity<>(headers), WishListDto.class);
+        WishListDto retrievedWishList = getResponseEntity.getBody();
+        assert getResponseEntity.getStatusCode().is2xxSuccessful();
+        assert retrievedWishList != null;
+        assertThat(retrievedWishList.productCountDtos().stream().map(
+                ProductCountDto::productId).toList())
+                .containsExactlyInAnyOrderElementsOf(wishListDto.productCountDtos().stream().map(
+                        ProductCountDto::productId).toList());
     }
 
     @Test
     void addOneWishListAndReplaceIt() throws Exception {
         HttpHeaders headers = addAdminAccountAndGetTokenAndAddTwoProductsAndGetHeaders();
 
-        //Test save wish list, verify response
-        WishListDto wishListDto = WishListDto.builder().productCountDtos(
+        // Test save wish list, verify response
+        WishListDto wishListDto = new WishListDto(
                 Lists.list(
-                        ProductCountDto.builder().productId(1L).build(),
-                        ProductCountDto.builder().productId(2L).build())).build();
+                        new ProductCountDto(1L, null),
+                        new ProductCountDto(2L, null)));
         HttpEntity<WishListDto> request6 = new HttpEntity<>(wishListDto, headers);
         WishListDto wishListDtoResponse = this.restTemplate.postForEntity("http://localhost:" + port + "/wish-list", request6, WishListDto.class).getBody();
         assert wishListDtoResponse != null;
-        assertThat(wishListDtoResponse.getProductCountDtos().stream().map(
-                ProductCountDto::getProductId).toList())
-                .containsExactlyInAnyOrderElementsOf(wishListDto.getProductCountDtos().stream().map(
-                        ProductCountDto::getProductId).toList());
+        assertThat(wishListDtoResponse.productCountDtos().stream().map(
+                ProductCountDto::productId).toList())
+                .containsExactlyInAnyOrderElementsOf(wishListDto.productCountDtos().stream().map(
+                        ProductCountDto::productId).toList());
 
-        //Test save new wish list, verify response
-        WishListDto wishListDto2 = WishListDto.builder().productCountDtos(
+        // Test save new wish list, verify response
+        WishListDto wishListDto2 = new WishListDto(
                 Lists.list(
-                        ProductCountDto.builder().productId(1L).build())).build();
+                        new ProductCountDto(1L, null)));
         HttpEntity<WishListDto> request7 = new HttpEntity<>(wishListDto2, headers);
         WishListDto wishListDto2Response = this.restTemplate.postForEntity("http://localhost:" + port + "/wish-list", request7, WishListDto.class).getBody();
         assert wishListDto2Response != null;
-        assertThat(wishListDto2Response.getProductCountDtos().stream().map(
-                ProductCountDto::getProductId).toList())
-                .containsExactlyInAnyOrderElementsOf(wishListDto2.getProductCountDtos().stream().map(
-                        ProductCountDto::getProductId).toList());
+        assertThat(wishListDto2Response.productCountDtos().stream().map(
+                ProductCountDto::productId).toList())
+                .containsExactlyInAnyOrderElementsOf(wishListDto2.productCountDtos().stream().map(
+                        ProductCountDto::productId).toList());
     }
 
     private HttpHeaders addAdminAccountAndGetTokenAndAddTwoProductsAndGetHeaders() {
         //Save account, verify response
-        AccountDto accountDto = AccountDto.builder().firstname("firstname").username("username").password("admin").email("admin@admin.com").build();
+        AccountDto accountDto = new AccountDto("username", "firstname", "admin@admin.com", "admin");
         HttpEntity<AccountDto> request1 = new HttpEntity<>(accountDto);
         AccountDto accountDtoResponse = this.restTemplate.postForEntity("http://localhost:" + port + "/account", request1, AccountDto.class).getBody();
         assert accountDtoResponse != null;
 
         //Get token
-        LoginRequestDto loginRequestDto = LoginRequestDto.builder().email("admin@admin.com").password("admin").build();
+        LoginRequestDto loginRequestDto = new LoginRequestDto("admin@admin.com", "admin");
         HttpEntity<LoginRequestDto> request2 = new HttpEntity<>(loginRequestDto);
         String token = this.restTemplate.postForEntity("http://localhost:" + port + "/token", request2, String.class).getBody();
         assert token != null;
@@ -99,17 +102,13 @@ class WishListTests {
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", "Bearer " + token);
         //Save product 1, verify response
-        ProductDto productDto1 = ProductDto.builder().image("image1").code("code1").name("name1")
-                .code("code1").category("category1").description("description1").price(1L).internalReference("internal1")
-                .inventoryStatusEnum(InventoryStatusEnum.LOWSTOCK).rating(1L).quantity(1L).shellId(1L).build();
+        ProductDto productDto1 = new ProductDto(null, "code1", "name1", "description1", "image1", "category1", 1L, 1L, "internal1", 1L, InventoryStatusEnum.LOWSTOCK, 1L, null, null);
         HttpEntity<ProductDto> request3 = new HttpEntity<>(productDto1, headers);
         ProductDto productDto1Response = this.restTemplate.postForEntity("http://localhost:" + port + "/products", request3, ProductDto.class).getBody();
         assert productDto1Response != null;
 
         //Save product 2, verify response
-        ProductDto productDto2 = ProductDto.builder().image("image2").code("code2").name("name2")
-                .code("code2").category("category2").description("description2").price(1L).internalReference("internal2")
-                .inventoryStatusEnum(InventoryStatusEnum.LOWSTOCK).rating(1L).quantity(1L).shellId(1L).build();
+        ProductDto productDto2 = new ProductDto(null, "code2", "name2", "description2", "image2", "category2", 1L, 1L, "internal2", 1L, InventoryStatusEnum.LOWSTOCK, 1L, null, null);
         HttpEntity<ProductDto> request4 = new HttpEntity<>(productDto2, headers);
         ProductDto productDto2Response = this.restTemplate.postForEntity("http://localhost:" + port + "/products", request4, ProductDto.class).getBody();
         assert productDto2Response != null;

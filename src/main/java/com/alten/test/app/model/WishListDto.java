@@ -1,17 +1,11 @@
 package com.alten.test.app.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Builder;
-import lombok.Data;
 
 import java.io.Serializable;
 import java.util.List;
 
-@Data
-@Builder
-public class WishListDto implements Serializable {
-
-    @JsonProperty("productCounts")
-    private List<ProductCountDto> productCountDtos;
-
+public record WishListDto(
+        @JsonProperty("productCounts") List<ProductCountDto> productCountDtos
+) implements Serializable {
 }

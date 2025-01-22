@@ -31,7 +31,7 @@ public class AccountServiceImpl implements AccountService {
         try {
             return accountMapper.mapToAccountDto(accountRepository.save(account));
         } catch (DataIntegrityViolationException e){
-            throw new AccountAlreadyExistsException(newAccountDto.getUsername(), newAccountDto.getEmail());
+            throw new AccountAlreadyExistsException(newAccountDto.username(), newAccountDto.email());
         }
     }
 

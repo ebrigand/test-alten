@@ -1,17 +1,11 @@
 package com.alten.test.app.model;
 
-import lombok.Builder;
-import lombok.Data;
-
 import java.io.Serializable;
 
-@Data
-@Builder
-public class AccountDto implements Serializable {
-
-    private String username;
-    private String firstname;
-    private String email;
-    private String password;
-
+public record AccountDto(
+        String username,
+        String firstname,
+        String email,
+        String password
+) implements Serializable {
 }

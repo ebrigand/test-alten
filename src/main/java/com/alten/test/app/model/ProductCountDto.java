@@ -5,12 +5,9 @@ import lombok.Data;
 
 import java.io.Serializable;
 
-@Data
-@Builder
-public class ProductCountDto implements Serializable {
 
-    private Long productId;
-
-    private Integer quantity;
-
+public record ProductCountDto(
+        Long productId,
+        Integer quantity
+) implements Serializable {
 }

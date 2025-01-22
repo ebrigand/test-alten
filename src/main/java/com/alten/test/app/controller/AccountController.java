@@ -31,8 +31,8 @@ public class AccountController {
 
     @PostMapping("/token")
     public String login(@RequestBody LoginRequestDto loginRequestDto) {
-        AccountDto accountDto = accountService.getByEmail(loginRequestDto.getEmail());
-        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(accountDto.getUsername(), loginRequestDto.getPassword()));
+        AccountDto accountDto = accountService.getByEmail(loginRequestDto.email());
+        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(accountDto.username(), loginRequestDto.password()));
         SecurityContextHolder.getContext().setAuthentication(authentication);
         return jwtTokenUtil.generateJwtToken(authentication);
     }

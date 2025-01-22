@@ -62,7 +62,7 @@ public class ProductController {
     private void checkAuthorized(){
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         AccountDto accountDto = accountService.getByUsername(userDetails.getUsername());
-        if(!accountDto.getEmail().equals(adminAccountEmail)) {
+        if(!accountDto.email().equals(adminAccountEmail)) {
             throw new UnauthorizedException(userDetails.getUsername());
         }
     }
