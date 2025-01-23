@@ -26,7 +26,6 @@ class ProductControllerTests {
     @Autowired
     private TestRestTemplate restTemplate;
 
-
     @Test
     void addTwoProducts() throws Exception {
         //Save account, verify response

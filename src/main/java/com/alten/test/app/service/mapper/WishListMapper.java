@@ -4,33 +4,31 @@ import com.alten.test.app.model.ProductCountDto;
 import com.alten.test.app.model.WishListDto;
 import com.alten.test.app.repository.domain.ProductCount;
 import com.alten.test.app.repository.domain.WishList;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.Named;
+import com.alten.test.app.service.ProductService;
+import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-@Mapper(componentModel = "spring")
-public interface WishListMapper {
+@Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
+public abstract class WishListMapper {
 
-    @Mapping(source = "productCounts", target = "productCountDtos", qualifiedByName = "productCountsToProductCountDtos")
-    WishListDto mapToWishListDto(WishList wishList);
+    @Autowired
+    protected ProductCountMapper productCountMapper;
+    
+    @Mappings ({
+        @Mapping(target = "productCountDtos", expression = "java(productCountMapper.productCountsToProductCountDtos(wishList.getProductCounts()))")
+    })
+    public abstract WishListDto mapToWishListDto(WishList wishList);
 
-    @Mapping(source = "productCountDtos", target = "productCounts", qualifiedByName = "productCountDtosToProductCounts")
-    @Mapping(target = "account", ignore = true)
-    @Mapping(target = "id", ignore = true)
-    WishList mapToWishList(WishListDto wishListDto);
+    @Mappings ({
+        @Mapping(target = "productCounts", expression = "java(productCountMapper.productCountDtosToProductCounts(wishListDto.productCountDtos()))"),
+        @Mapping(target = "account", ignore = true),
+        @Mapping(target = "id", ignore = true)
+    })
+    public abstract WishList mapToWishList(WishListDto wishListDto);
 
-    @Named("productCountsToProductCountDtos")
-    static List<ProductCountDto> productCountsToProductCountDtos(Set<ProductCount> productCounts) {
-        return productCounts.stream().map(productCount -> Mappers.getMapper(ProductCountMapper.class).mapToProductCountDto(productCount)).toList();
-    }
-
-    @Named("productCountDtosToProductCounts")
-    static Set<ProductCount> productCountDtosToProductCounts(List<ProductCountDto> productCountDtos) {
-        return productCountDtos.stream().map(productCountDto -> Mappers.getMapper(ProductCountMapper.class).mapToProductCount(productCountDto)).collect(Collectors.toSet());
-    }
 }

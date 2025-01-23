@@ -12,25 +12,14 @@ import org.springframework.util.ObjectUtils;
 import java.util.List;
 
 @Service
-public class ProductServiceImpl implements InitializingBean, ProductService {
+public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository productRepository;
     private final ProductMapper productMapper;
 
-    private static ProductService instance;
-
     ProductServiceImpl(ProductRepository productRepository, ProductMapper productMapper) {
         this.productRepository = productRepository;
         this.productMapper = productMapper;
-    }
-
-    @Override
-    public void afterPropertiesSet() throws Exception {
-        instance = this;
-    }
-
-    public static ProductService get() {
-        return instance;
     }
 
     public List<ProductDto> getAll() {

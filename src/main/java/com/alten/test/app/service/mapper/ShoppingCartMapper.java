@@ -3,29 +3,36 @@ package com.alten.test.app.service.mapper;
 import com.alten.test.app.model.ShoppingCartDto;
 import com.alten.test.app.repository.domain.Product;
 import com.alten.test.app.repository.domain.ShoppingCart;
+import com.alten.test.app.service.ProductService;
 import com.alten.test.app.service.ProductServiceImpl;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.Named;
+import org.mapstruct.*;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-@Mapper(componentModel = "spring")
-public interface ShoppingCartMapper {
+@Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
+public abstract class ShoppingCartMapper {
 
-    @Mapping(source = "products", target = "productIds", qualifiedByName = "productsToProductIds")
-    ShoppingCartDto mapToShoppingCartDto(ShoppingCart shoppingCart);
+    @Autowired
+    protected ProductService productService;
 
-    @Mapping(source = "productIds", target = "products", qualifiedByName = "productIdsToProducts")
-    @Mapping(target = "account", ignore = true)
-    @Mapping(target = "id", ignore = true)
-    ShoppingCart mapToShoppingCart(ShoppingCartDto shoppingCartDto);
+    @Mappings({
+        @Mapping(source = "products", target = "productIds", qualifiedByName = "productsToProductIds")
+    })
+    public abstract ShoppingCartDto mapToShoppingCartDto(ShoppingCart shoppingCart);
+
+    @Mappings({
+        @Mapping(source = "productIds", target = "products", qualifiedByName = "productIdsToProducts"),
+        @Mapping(target = "account", ignore = true),
+        @Mapping(target = "id", ignore = true)
+    })
+    public abstract ShoppingCart mapToShoppingCart(ShoppingCartDto shoppingCartDto);
 
     @Named("productIdsToProducts")
-    static Set<Product> productIdsToProducts(List<Long> productIds) {
-        return productIds.stream().map(productId -> ProductServiceImpl.get().get(productId)).collect(Collectors.toSet());
+    Set<Product> productIdsToProducts(List<Long> productIds) {
+        return productIds.stream().map(productId -> productService.get(productId)).collect(Collectors.toSet());
     }
 
     @Named("productsToProductIds")
