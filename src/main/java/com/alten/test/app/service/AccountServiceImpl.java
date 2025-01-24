@@ -15,16 +15,13 @@ import org.springframework.stereotype.Service;
 public class AccountServiceImpl implements AccountService {
 
     private final AccountRepository accountRepository;
-    private final RoleRepository roleRepository;
     private final AccountMapper accountMapper;
     private final PasswordEncoder passwordEncoder;
 
     public AccountServiceImpl(AccountRepository accountRepository,
-                              RoleRepository roleRepository,
                               AccountMapper accountMapper,
                               PasswordEncoder passwordEncoder) {
         this.accountRepository = accountRepository;
-        this.roleRepository = roleRepository;
         this.accountMapper = accountMapper;
         this.passwordEncoder = passwordEncoder;
     }
@@ -33,7 +30,6 @@ public class AccountServiceImpl implements AccountService {
         Account account = accountMapper.mapToAccount(newAccountDto);
         account.setPassword(passwordEncoder.encode(account.getPassword()));
         try {
-            //roleRepository.saveAll(account.getRoles());
             return accountMapper.mapToAccountDto(accountRepository.save(account));
         } catch (DataIntegrityViolationException e){
             throw new AccountAlreadyExistsException(newAccountDto.username(), newAccountDto.email());

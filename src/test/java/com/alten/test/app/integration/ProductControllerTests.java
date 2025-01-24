@@ -4,6 +4,7 @@ import com.alten.test.app.enumeration.InventoryStatusEnum;
 import com.alten.test.app.model.AccountDto;
 import com.alten.test.app.model.LoginRequestDto;
 import com.alten.test.app.model.ProductDto;
+import com.alten.test.app.model.RoleDto;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -13,6 +14,7 @@ import org.springframework.http.*;
 import org.springframework.test.annotation.DirtiesContext;
 
 import java.util.Arrays;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -29,7 +31,7 @@ class ProductControllerTests {
     @Test
     void addTwoProducts() throws Exception {
         //Save account, verify response
-        AccountDto accountDto = new AccountDto("username", "firstname", "admin@admin.com", "admin");
+        AccountDto accountDto = new AccountDto("username", "firstname", "admin@admin.com", "admin", List.of(new RoleDto("ADMIN")));
         HttpEntity<AccountDto> request1 = new HttpEntity<>(accountDto);
         AccountDto accountDtoResponse = restTemplate.postForEntity("http://localhost:" + port + "/account", request1, AccountDto.class).getBody();
         assert accountDtoResponse != null;
@@ -54,7 +56,7 @@ class ProductControllerTests {
     @Test
     void deleteOneProduct() throws Exception {
         //Save account, verify response
-        AccountDto accountDto = new AccountDto("username", "firstname", "admin@admin.com", "admin");
+        AccountDto accountDto = new AccountDto("username", "firstname", "admin@admin.com", "admin", List.of(new RoleDto("ADMIN")));
         HttpEntity<AccountDto> request1 = new HttpEntity<>(accountDto);
         AccountDto accountDtoResponse = restTemplate.postForEntity("http://localhost:" + port + "/account", request1, AccountDto.class).getBody();
         assert accountDtoResponse != null;
@@ -96,7 +98,7 @@ class ProductControllerTests {
     @Test
     void getProducts() throws Exception {
         // Save account, verify response
-        AccountDto accountDto = new AccountDto("username", "firstname", "admin@admin.com", "admin");
+        AccountDto accountDto = new AccountDto("username", "firstname", "admin@admin.com", "admin", List.of(new RoleDto("ADMIN")));
         HttpEntity<AccountDto> request1 = new HttpEntity<>(accountDto);
         AccountDto accountDtoResponse = restTemplate.postForEntity("http://localhost:" + port + "/account", request1, AccountDto.class).getBody();
         assert accountDtoResponse != null;
@@ -127,7 +129,7 @@ class ProductControllerTests {
     @Test
     void getProduct() throws Exception {
         // Save account, verify response
-        AccountDto accountDto = new AccountDto("username", "firstname", "admin@admin.com", "admin");
+        AccountDto accountDto = new AccountDto("username", "firstname", "admin@admin.com", "admin", List.of(new RoleDto("ADMIN")));
         HttpEntity<AccountDto> request1 = new HttpEntity<>(accountDto);
         AccountDto accountDtoResponse = restTemplate.postForEntity("http://localhost:" + port + "/account", request1, AccountDto.class).getBody();
         assert accountDtoResponse != null;
@@ -154,7 +156,7 @@ class ProductControllerTests {
     @Test
     void patchProduct() throws Exception {
         // Save account, verify response
-        AccountDto accountDto = new AccountDto("username", "firstname", "admin@admin.com", "admin");
+        AccountDto accountDto = new AccountDto("username", "firstname", "admin@admin.com", "admin", List.of(new RoleDto("ADMIN")));
         HttpEntity<AccountDto> request1 = new HttpEntity<>(accountDto);
         AccountDto accountDtoResponse = restTemplate.postForEntity("http://localhost:" + port + "/account", request1, AccountDto.class).getBody();
         assert accountDtoResponse != null;

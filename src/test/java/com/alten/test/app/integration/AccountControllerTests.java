@@ -4,6 +4,7 @@ import com.alten.test.app.enumeration.InventoryStatusEnum;
 import com.alten.test.app.model.AccountDto;
 import com.alten.test.app.model.LoginRequestDto;
 import com.alten.test.app.model.ProductDto;
+import com.alten.test.app.model.RoleDto;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -15,6 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.DirtiesContext;
 
+import java.util.List;
 import java.util.Objects;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -31,7 +33,7 @@ class AccountControllerTests {
 
     @Test
     void addAdminAccountAndAddNoAdminAccount() throws Exception {
-        AccountDto adminAccountDto = new AccountDto("username", "firstname", "admin@admin.com", "admin");
+        AccountDto adminAccountDto = new AccountDto("username", "firstname", "admin@admin.com", "admin", List.of(new RoleDto("ADMIN")));
         HttpEntity<AccountDto> request1 = new HttpEntity<>(adminAccountDto);
         AccountDto accountDtoResponseBody1 = this.restTemplate.postForEntity("http://localhost:" + port + "/account", request1, AccountDto.class).getBody();
         assert accountDtoResponseBody1 != null;
@@ -39,7 +41,7 @@ class AccountControllerTests {
         assertThat(accountDtoResponseBody1.email()).isEqualTo(adminAccountDto.email());
         assertThat(accountDtoResponseBody1.firstname()).isEqualTo(adminAccountDto.firstname());
 
-        AccountDto noAdminAccountDto = new AccountDto("username2", "firstname2", "truc@truc.com", "truc");
+        AccountDto noAdminAccountDto = new AccountDto("username2", "firstname2", "truc@truc.com", "truc", List.of(new RoleDto("ADMIN")));
         HttpEntity<AccountDto> request2 = new HttpEntity<>(noAdminAccountDto);
         AccountDto accountDtoResponseBody2 = this.restTemplate.postForEntity("http://localhost:" + port + "/account", request2, AccountDto.class).getBody();
         assert accountDtoResponseBody2 != null;
@@ -50,7 +52,7 @@ class AccountControllerTests {
 
     @Test
     void addNoAdminAccountAndGetTokenAndAddOneProduct() throws Exception {
-        AccountDto accountDto = new AccountDto("username", "firstname", "truc@truc.com", "truc");
+        AccountDto accountDto = new AccountDto("username", "firstname", "truc@truc.com", "truc", List.of(new RoleDto("ADMIN")));
         HttpEntity<AccountDto> request1 = new HttpEntity<>(accountDto);
         this.restTemplate.postForEntity("http://localhost:" + port + "/account", request1, AccountDto.class);
 

@@ -14,6 +14,8 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.DirtiesContext;
 
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -66,7 +68,7 @@ class ShoppingCartTests {
 
     private HttpHeaders addAdminAccountAndGetTokenAndAddTwoProductsAndGetHeaders() {
         //Save account, verify response
-        AccountDto accountDto = new AccountDto("username", "firstname", "admin@admin.com", "admin");
+        AccountDto accountDto = new AccountDto("username", "firstname", "admin@admin.com", "admin", List.of(new RoleDto("ADMIN")));
         HttpEntity<AccountDto> request1 = new HttpEntity<>(accountDto);
         AccountDto accountDtoResponse = this.restTemplate.postForEntity("http://localhost:" + port + "/account", request1, AccountDto.class).getBody();
         assert accountDtoResponse != null;

@@ -1,14 +1,15 @@
 package com.alten.test.app.repository.domain;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.Objects;
 
+@Builder
 @Entity
-@Getter
-@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Data
 public class ProductCount {
 
     @Id
