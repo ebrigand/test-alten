@@ -36,7 +36,6 @@ public class ProductController {
 
     @PostMapping
     public ProductDto post(@RequestBody ProductDto newProductDto) {
-        checkAuthorized();
         return productService.post(newProductDto);
     }
 
@@ -47,13 +46,11 @@ public class ProductController {
 
     @PatchMapping("/{id}")
     public ProductDto patch(@PathVariable Long id, @RequestBody ProductDto patchProductDto) {
-        checkAuthorized();
         return productService.patch(id, patchProductDto);
      }
 
     @DeleteMapping("/{id}")
     public void delete(@PathVariable Long id) {
-        checkAuthorized();
         productService.delete(id);
     }
 

@@ -33,18 +33,16 @@ public abstract class ProductCountMapper {
     })
     public abstract ProductCountDto mapToProductCountDto(ProductCount ProductCount);
 
-    @Named("productCountsToProductCountDtos")
     public List<ProductCountDto> productCountsToProductCountDtos(Set<ProductCount> productCounts) {
         return productCounts.stream().map(this::mapToProductCountDto).toList();
     }
 
-    @Named("productCountDtosToProductCounts")
     public Set<ProductCount> productCountDtosToProductCounts(List<ProductCountDto> productCountDtos) {
         return productCountDtos.stream().map(this::mapToProductCount).collect(Collectors.toSet());
     }
 
     @Named("productIdToProduct")
-    Product productIdToProduct(Long productId) {
+    protected Product productIdToProduct(Long productId) {
         return productService.get(productId);
     }
 
