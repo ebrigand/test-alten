@@ -5,7 +5,10 @@ import com.alten.test.app.model.AccountDto;
 import com.alten.test.app.model.ProductDto;
 import com.alten.test.app.service.AccountService;
 import com.alten.test.app.service.ProductService;
+import lombok.Getter;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
@@ -14,17 +17,18 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/products")
+@Getter
 public class ProductController {
 
     @Value("${account.admin.email}")
-    private String adminAccountEmail;
+    private String adminEmail;
 
     private final ProductService productService;
 
     private final AccountService accountService;
 
     public ProductController(ProductService productService,
-                             AccountService accountService) {
+                             @Qualifier("accountService") AccountService accountService) {
         this.productService = productService;
         this.accountService = accountService;
     }
@@ -40,6 +44,7 @@ public class ProductController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("@accountService.getByUsername(authentication.principal.username).email.equals(this.getAdminEmail())")
     public ProductDto get(@PathVariable Long id) {
         return productService.getProductDto(id);
     }
@@ -54,13 +59,4 @@ public class ProductController {
         productService.delete(id);
     }
 
-    //Peut être moyen de gérer celà dans un filtre ou dans la methode WebSecurityConfig.filterChain(HttpSecurity http)
-    //Dans la vrai vie je poserais la question aux collègues ou sur stackoverflow
-    private void checkAuthorized(){
-        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        AccountDto accountDto = accountService.getByUsername(userDetails.getUsername());
-        if(!accountDto.email().equals(adminAccountEmail)) {
-            throw new UnauthorizedException(userDetails.getUsername());
-        }
-    }
 }

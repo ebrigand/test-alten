@@ -8,6 +8,6 @@ import java.io.Serializable;
 import java.util.List;
 
 public record ShoppingCartDto(
-        @JsonProperty("productIds") List<Long> productIds
+        @JsonProperty("productDtos") List<ProductDto> productDtos
 ) implements Serializable {
 }

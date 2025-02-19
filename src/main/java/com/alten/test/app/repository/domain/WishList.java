@@ -24,6 +24,7 @@ public class WishList {
     private Account account;
 
     @OneToMany(mappedBy = "wishList", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
     private Set<ProductCount> productCounts = new HashSet<>();
 
     @Override

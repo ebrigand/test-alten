@@ -15,40 +15,15 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-@Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
-public abstract class ProductCountMapper {
+@Mapper(componentModel = MappingConstants.ComponentModel.SPRING, uses = ProductMapper.class)
+public interface ProductCountMapper {
 
-    @Autowired
-    protected ProductService productService;
+    @Mapping(source = "productDto", target = "product")
+    @Mapping(target = "wishList", ignore = true)
+    @Mapping(target = "id", ignore = true)
+    ProductCount mapToProductCount(ProductCountDto ProductCountDto);
 
-    @Mappings({
-            @Mapping(source = "productId", target = "product", qualifiedByName = "productIdToProduct"),
-            @Mapping(target = "wishList", ignore = true),
-            @Mapping(target = "id", ignore = true)
-    })
-    public abstract ProductCount mapToProductCount(ProductCountDto ProductCountDto);
-
-    @Mappings({
-            @Mapping(source = "product", target = "productId", qualifiedByName = "productToProductId")
-    })
-    public abstract ProductCountDto mapToProductCountDto(ProductCount ProductCount);
-
-    public List<ProductCountDto> productCountsToProductCountDtos(Set<ProductCount> productCounts) {
-        return productCounts.stream().map(this::mapToProductCountDto).toList();
-    }
-
-    public Set<ProductCount> productCountDtosToProductCounts(List<ProductCountDto> productCountDtos) {
-        return productCountDtos.stream().map(this::mapToProductCount).collect(Collectors.toSet());
-    }
-
-    @Named("productIdToProduct")
-    protected Product productIdToProduct(Long productId) {
-        return productService.get(productId);
-    }
-
-    @Named("productToProductId")
-    static Long productToProductId(Product product) {
-        return product.getId();
-    }
+    @Mapping(source = "product", target = "productDto")
+    ProductCountDto mapToProductCountDto(ProductCount ProductCount);
 
 }

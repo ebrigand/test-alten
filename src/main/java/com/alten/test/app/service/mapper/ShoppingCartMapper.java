@@ -12,31 +12,15 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-@Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
-public abstract class ShoppingCartMapper {
+@Mapper(componentModel = MappingConstants.ComponentModel.SPRING, uses = ProductMapper.class)
+public interface ShoppingCartMapper {
 
-    @Autowired
-    protected ProductService productService;
+    @Mapping(source = "products", target = "productDtos")
+    ShoppingCartDto mapToShoppingCartDto(ShoppingCart shoppingCart);
 
-    @Mappings({
-        @Mapping(source = "products", target = "productIds", qualifiedByName = "productsToProductIds")
-    })
-    public abstract ShoppingCartDto mapToShoppingCartDto(ShoppingCart shoppingCart);
+    @Mapping(source = "productDtos", target = "products")
+    @Mapping(target = "account", ignore = true)
+    @Mapping(target = "id", ignore = true)
+    ShoppingCart mapToShoppingCart(ShoppingCartDto shoppingCartDto);
 
-    @Mappings({
-        @Mapping(source = "productIds", target = "products", qualifiedByName = "productIdsToProducts"),
-        @Mapping(target = "account", ignore = true),
-        @Mapping(target = "id", ignore = true)
-    })
-    public abstract ShoppingCart mapToShoppingCart(ShoppingCartDto shoppingCartDto);
-
-    @Named("productIdsToProducts")
-    Set<Product> productIdsToProducts(List<Long> productIds) {
-        return productIds.stream().map(productId -> productService.get(productId)).collect(Collectors.toSet());
-    }
-
-    @Named("productsToProductIds")
-    static List<Long> productsToProductIds(Set<Product> products) {
-        return products.stream().map(Product::getId).toList();
-    }
 }

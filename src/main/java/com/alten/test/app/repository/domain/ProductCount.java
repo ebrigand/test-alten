@@ -24,6 +24,7 @@ public class ProductCount {
     @JoinColumn(name = "WISH_LIST_ID", referencedColumnName = "WISH_LIST_ID")
     private WishList wishList;
 
+    @Builder.Default
     private Integer quantity = 0;
 
     @Override

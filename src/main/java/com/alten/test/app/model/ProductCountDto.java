@@ -7,7 +7,7 @@ import java.io.Serializable;
 
 
 public record ProductCountDto(
-        Long productId,
+        ProductDto productDto,
         Integer quantity
 ) implements Serializable {
 }

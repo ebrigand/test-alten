@@ -31,5 +31,6 @@ public class ShoppingCart {
             joinColumns = @JoinColumn(name = "SHOPPING_CART_ID"),
             inverseJoinColumns = @JoinColumn(name = "PRODUCT_ID")
     )
+    @Builder.Default
     private Set<Product> products = new HashSet<>();
 }
